@@ -87,6 +87,7 @@ Let’s consider an agency operating a route with a single demand-response zone.
 
 In this case, the agency defines a service area in areas.txt with id AreaX.  The agency also defines a trip in **trips.txt** with id *TripX*.  We also add two entries to **stop\_times.txt**:
 
+|  |  |  |
 | --- | --- | --- |
 | trip\_id | TripX | TripX |
 | stop\_id | StopX | StopX |
@@ -104,6 +105,7 @@ These two stop-time entries start service in *AreaX* at 9 am and stop service in
 
 Let’s now consider an agency operating a route with a single demand-response that has a regular start and end point.  In this case, *StopX* and *StopZ* are the start and end stops, and *AreaX* is the service area served in-between.
 
+|  |  |  |  |  |
 | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX |
 | stop\_id | StopX | StopY | StopY | StopZ |
@@ -119,6 +121,7 @@ Let’s now consider an agency operating a route with a single demand-response t
  
 In this case, the agency builds on the previous example, but now defines a mix of normal stop-time and service-area stop-time entries in **stop\_times.txt**:
 
+|  |  |  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX | TripX | TripX | TripX |
 | stop\_id | StopA | StopB | StopB | StopC | StopD | StopD | StopE |
@@ -136,6 +139,7 @@ In this example, the transit vehicle starts at fixed-stop *StopA*, travels throu
 
 In this case, the agency has a fixed start and end stop, a flexible zone between those stops, and fixed stops within the flexible zone.
 
+|  |  |  |  |  |  |
 | --- | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX | TripX |
 | stop\_id | StopA | StopB | StopC | StopB | StopD |
@@ -152,7 +156,8 @@ In this case, the agency has a fixed start and end stop, a flexible zone between
 Some agencies have a simple methodology for defining demand-response service areas. The zone is typically defined as a particular distance from the base route (eg. ½ mile). For agencies that don’t want to maintain the actual geometry for that corridor, the **start\_service\_area\_radius** and **end\_service\_area\_radius** fields offer a simple way to define a service area.
 
 In the following example, an agency defines a ½ mile (~800 meter) flexible service area around their base route. For this technique to work, the trip with id *TripX* must also specify a **shape\_id** value indicating the path of travel.
- 
+
+|  |  |  |  |  | 
 | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX |
 | stop\_id | StopX | StopY | StopY | StopZ |
