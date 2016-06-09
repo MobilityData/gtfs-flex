@@ -56,8 +56,6 @@ Regarding **stop\_id**, two possibilities:
 * We allow **stop\_id** to be empty when **start\_service\_area\_id** has been specified. This breaks the idea that **stop\_id** is always required, but is conceptually cleaner.
 * We still require **stop\_id** to be specified. It should specify a stop at the center of the service area and might be used to provide additional data for the service area (name? url? fare zone?).
 
-An alternative to the above options is to add a **stop\_times\_areas.txt** file which contains the records with **start\_service\_area\_id** and **end\_service\_area\_id**. The schedule for a **trip\_id** is expressed through the combination of these two files — **stop\_sequence** numbers count up through both files. For an example, see the gtfs-flexible sandbox example 5.A or “Green Mountain”.
-
 Regarding **arrival\_time** and **departure\_time**, these fields can be used to specify rough timing information for a route deviation or flexible route segment relative to other parts of the route, or can be left blank if it’s not the first or last stop-time in the trip. If a time is specified, it indicates when service begins in the area.
 
 ###Request Stops
