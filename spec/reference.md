@@ -111,8 +111,6 @@ Demand-responsive transportation services have parameters for request requiremen
 
 The service includes 4 untimed points (Stops B, C, D, and E), which are not served in a predefined order. Riders are required to call the agency in advance to coordinate pickup and dropoff at these stops. The vehicle is regularly scheduled to begin at StopA and return to StopA 30 minutes later.
 
-|                 |          |       |       |       |       |       |
-|-----------------|----------|-------|-------|-------|-------|-------|
 | trip\_id        | TripX    | TripX | TripX | TripX | TripX | TripX |
 | stop\_id        | StopA    | StopB | StopC | StopD | StopE | StopA |
 | stop\_sequence  | 0        | 1     | 2     | 3     | 4     | 5     |
@@ -128,8 +126,7 @@ Let’s consider an agency operating a route with a single demand-response zone.
 
 In this case, the agency defines a service area in areas.txt with id AreaX.  The agency also defines a trip in **trips.txt** with id *TripX*.  We also add two entries to **stop\_times.txt**:
 
-|  |  |  |
-| --- | --- | --- |
+
 | trip\_id | TripX | TripX |
 | stop\_id | StopX | StopX |
 | stop\_sequence | 0 | 1 |
@@ -146,8 +143,6 @@ These two stop-time entries start service in *AreaX* at 9 am and stop service in
 
 Let’s now consider an agency operating a route with a single demand-response that has a regular start and end point.  In this case, *StopX* and *StopZ* are the start and end stops, and *AreaX* is the service area served in-between.
 
-|  |  |  |  |  |
-| --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX |
 | stop\_id | StopX | StopY | StopY | StopZ |
 | stop\_sequence | 0 | 1 | 2 | 3 |
@@ -162,8 +157,6 @@ Let’s now consider an agency operating a route with a single demand-response t
  
 In this case, the agency builds on the previous example, but now defines a mix of normal stop-time and service-area stop-time entries in **stop\_times.txt**:
 
-|  |  |  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX | TripX | TripX | TripX |
 | stop\_id | StopA | StopB | StopB | StopC | StopD | StopD | StopE |
 | stop\_sequence | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
@@ -180,8 +173,6 @@ In this example, the transit vehicle starts at fixed-stop *StopA*, travels throu
 
 In this case, the agency has a fixed start and end stop, a flexible zone between those stops, and fixed stops within the flexible zone.
 
-|  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX | TripX |
 | stop\_id | StopA | StopB | StopC | StopB | StopD |
 | stop\_sequence | 0 | 1 | 2 | 3 | 4 |
@@ -198,8 +189,6 @@ Some agencies have a simple methodology for defining demand-response service are
 
 In the following example, an agency defines a ½ mile (~800 meter) flexible service area around their base route. For this technique to work, the trip with id *TripX* must also specify a **shape\_id** value indicating the path of travel.
 
-|  |  |  |  |  | 
-| --- | --- | --- | --- | --- |
 | trip\_id | TripX | TripX | TripX | TripX |
 | stop\_id | StopX | StopY | StopY | StopZ |
 | stop\_sequence | 0 | 1 | 2 | 3 |
