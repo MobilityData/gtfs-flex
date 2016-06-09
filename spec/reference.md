@@ -12,7 +12,7 @@
 
 ###Introduction
 
-Discussion: GTFS Flexible Transit Working Group (Google Groups)
+Discussion: [GTFS Flexible Transit Working Group (Google Groups)](https://groups.google.com/forum/#!forum/gtfs-flexible-wg)
 
 We’d like to better support modeling of flexible public transportation services in GTFS. For the purposes of this discussion, “flexible” services will be defined with regard to the following characteristics, as defined in [TCRP Program Report #140 - A Guide for Planning and Operating Flexible Public Transportation Services](http://www.trb.org/Main/Blurbs/163788.aspx):
 
