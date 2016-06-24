@@ -3,9 +3,11 @@
 ###Table of Contents
 
 * [Introduction](#introduction)
+* [Point Deviation](#point-deviation)
 * [Defining Areas](#defining-areas)
 * [Route Deviation](#route-deviation)
 * [Request Stops](#request-stops)
+* [Defining Service Parameters](#defining-service-parameters)
 * [Examples](#examples)
 
 ###Introduction
@@ -22,6 +24,18 @@ We’d like to better support modeling of flexible public transportation service
 * **Zone Route:** vehicles operating in demand-responsive mode along a corridor with established departure and arrival times at one or more end points in the zone.
 
 The TCRP report catalogs a number of transit agencies across the US, evaluating how each agency uses flexible public transportation services in their own system. What’s clear from this analysis is that these agencies use a variety of techniques, picking and choosing from various strategies and flavors of flexible service when implementing their systems. Supporting all such services in GTFS will be tricky, but hopefully not impossible.
+
+###Point Deviation
+
+The existing GTFS assumes that stops are served in an order, defined by stop\_sequence. In order to describe a point-deviation service, specification needs the capability to override this assumption.
+
+Proposed: A new field in **stop_times.txt**, **unordered**.
+
+| Field Name | Required?  | Details |
+|------------|------------|---------|
+| unordered  | Optional   | Consecutive values of 1 indicate a block of stops (deviation points) are not served in a predetermined order. This block is interrupted by a 0 value. Empty or other values are presumed to be 0. |
+
+Note that if a **shape_id** is specified for a trip that includes stops where **unordered = 1**, then **shape\_dist\_traveled** must be specified in **stop_times.txt** and **shapes.txt**. The correspondence of **shape\_dist\_traveled** values must make it clear that there is no alignment specified for the block of deviation points.
 
 ###Defining Areas
 
@@ -77,7 +91,34 @@ The **continuous\_stops** field can have the following non-negative integer valu
 
 If specified as 1, a valid shape must be defined for the trip, in order to indicate the complete path of travel.
 
+###Defining Service Parameters
+
+Demand-responsive transportation services have parameters for request requirements and expected or maximum travel times. Below are additions to the **trips.txt** file that define parameters for the demand-responsive service portions of that trip.
+
+| Field Name | Required? | Details |
+|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| drt\_max\_travel\_time | Optional | Defines maximum travel time for a demand-responsive passenger travel leg on the trip. This time may be expressed as a value (minutes), or as an arithmetic function where t=[direct travel time]. For example, the formula t*2.5+5 indicates that the maximum travel time for the passenger's demand-responsive travel leg is 30 minutes if the direct travel time is 10 minutes. |
+| drt\_avg\_travel\_time | Optional | Defines average or expected travel time demand-responsive passenger travel leg on the trip. Values or functions are expressed in the same way as drt\_max\_travel\_time. |
+| drt\_advance\_book\_min | Optional | Minutes of advance time necessary before travel to make booking request. |
+
+**Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
+
 ###Examples
+
+#####Point Deviation, Scheduled Start and Endpoints
+
+The service includes 4 untimed points (Stops B, C, D, and E), which are not served in a predefined order. Riders are required to call the agency in advance to coordinate pickup and dropoff at these stops. The vehicle is regularly scheduled to begin at StopA and return to StopA 30 minutes later.
+
+|                 |          |       |       |       |       |       |
+|-----------------|----------|-------|-------|-------|-------|-------|
+| trip\_id        | TripX    | TripX | TripX | TripX | TripX | TripX |
+| stop\_id        | StopA    | StopB | StopC | StopD | StopE | StopA |
+| stop\_sequence  | 0        | 1     | 2     | 3     | 4     | 5     |
+| unordered       | 0        | 1     | 1     | 1     | 1     | 0     |
+| arrival\_time   | 09:00:00 |       |       |       |       | 9:30  |
+| departure\_time | 09:00:00 |       |       |       |       | 9:30  |
+| pickup\_type    |          | 2     | 2     | 2     | 2     |       |
+| drop\_off\_type |          | 2     | 2     | 2     | 2     |       |
 
 #####Single Zone, No Defined Stops
 
