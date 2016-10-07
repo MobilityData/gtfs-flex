@@ -4,6 +4,11 @@ This directory contains the GTFS-flex specification and documentation.
 
 GTFS-flex is a proposed/prototype extension to the [General Transit Feed Specification](https://github.com/google/transit/tree/master/gtfs). GTFS-flex would add the capability to model various demand-responsive transportation (DRT) services to GTFS, which currently only models fixed-route public transportation. GTFS-flex is in a prototyping phase in which its capabilities to model transportation services are being tested and adapted. There is no software that currently consumes GTFS-flex data, though projects have been proposed.
 
+### Quick links
+* [GTFS-flex draft spec in this repo](spec/reference.md)
+* [GTFS-flex Google Group](https://groups.google.com/forum/#!forum/gtfs-flexible-wg)
+* [Original Google Doc proposal](https://docs.google.com/document/d/1UTcpMJlANSoJ1ZEk5IrQh_plza1ZnvgwraMEBI_o2mw/edit?usp=sharing)
+
 ### Change Process
 
 Discussion and change proposals are strongly encouraged. Rapid iteration and prototyping at this stage is necessary to develop GTFS-flex. We have adopted the following change proposal process:
@@ -15,11 +20,6 @@ Discussion and change proposals are strongly encouraged. Rapid iteration and pro
 5. Pull requests with at least one +1 and no -1 are merged.
 
 The above process is intended to begin tentative governance practices, and prevent spec bloat. Given that the GTFS-flex is in early prototype phase, speculative and experimental features are welcome.
-
-### Quick links
-* [GTFS-flex Google Group](https://groups.google.com/forum/#!forum/gtfs-flexible-wg)
-* [Original Google Doc proposal](https://docs.google.com/document/d/1UTcpMJlANSoJ1ZEk5IrQh_plza1ZnvgwraMEBI_o2mw/edit?usp=sharing)
-* [GTFS-flex draft spec in this repo](spec/reference.md)
 
 ### Background & Purpose
 
