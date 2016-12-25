@@ -21,6 +21,12 @@ Discussion and change proposals are strongly encouraged. Rapid iteration and pro
 
 The above process is intended to begin tentative governance practices, and prevent spec bloat. Given that the GTFS-flex is in early prototype phase, speculative and experimental features are welcome.
 
+### Spec extension schematic diagram
+
+The below shows updated and added files in GTFS-flex, compared to the current GTFS.
+
+![Diagram of added files in GTFS-flex](/spec/GTFS and GTFS-flex.jpg)
+
 ### Background & Purpose
 
 We’d like to better support modeling of flexible public transportation services in GTFS. For the purposes of this discussion, “flexible” services will be defined with regard to the following characteristics, as defined in [TCRP Program Report #140 - A Guide for Planning and Operating Flexible Public Transportation Services](http://www.trb.org/Main/Blurbs/163788.aspx):
