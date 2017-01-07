@@ -23,7 +23,7 @@ The above process is intended to begin tentative governance practices, and preve
 
 ### Spec extension schematic diagram
 
-The below shows updated and added files in GTFS-flex, compared to the current GTFS.
+The below shows updated and added files in GTFS-flex, compared to the current GTFS (original Google Drawing is [here](https://docs.google.com/drawings/d/1g1kuTZPLFphMa942htywksIhxXqM_mMFCROOiEw5eNo/edit?usp=sharing)).
 
 ![Diagram of added files in GTFS-flex](/spec/GTFS and GTFS-flex.jpg)
 
