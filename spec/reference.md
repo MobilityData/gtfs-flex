@@ -1,6 +1,6 @@
-##Flexible Public Transportation Services in GTFS
+## Flexible Public Transportation Services in GTFS
 
-###Table of Contents
+### Table of Contents
 
 * [Point Deviation](#point-deviation)
 * [Defining Areas](#defining-areas)
@@ -9,7 +9,7 @@
 * [Defining Service Parameters](#defining-service-parameters)
 * [Examples](#examples)
 
-###Point Deviation
+### Point Deviation
 
 The existing GTFS assumes that stops are served in an order, defined by stop\_sequence. In order to describe a point-deviation service, specification needs the capability to override this assumption.
 
@@ -21,7 +21,7 @@ Proposed: A new field in **stop_times.txt**, **unordered**.
 
 Note that if a **shape_id** is specified for a trip that includes stops where **unordered = 1**, then **shape\_dist\_traveled** must be specified in **stop_times.txt** and **shapes.txt**. The correspondence of **shape\_dist\_traveled** values must make it clear that there is no alignment specified for the block of deviation points.
 
-###Defining Areas
+### Defining Areas
 
 A key concept in flexible services is the idea of a service area or zone. These zones are used define the region where demand-response operation is in effect. We propose a model for defining these regions in GTFS. Because “zone” also tends to get conflated with discussions of fare systems, we propose calling general polygons “areas”. As such, we propose introducing a new file, **areas.txt**, with the following fields:
 
@@ -34,7 +34,7 @@ A key concept in flexible services is the idea of a service area or zone. These 
 
 Basically, **areas.txt** provides a mechanism for defining polygon regions, identified by id. The coordinates for areas must be specified in counterclockwise order. Areas follow the "right-hand rule," which states that if you place the fingers of your right hand in the direction in which the coordinates are specified, your thumb points in the general direction of the geometric normal for the polygon.
 
-###Route Deviation
+### Route Deviation
 
 As discussed, flexible routes can use service areas and zones in a variety of ways. Some routes provide demand-response services with a single fixed zone, while others offer regions of flexible services along an otherwise fixed route, while yet others use combinations of the two.
 
@@ -56,7 +56,7 @@ Regarding **stop\_id**, two possibilities:
 
 Regarding **arrival\_time** and **departure\_time**, these fields can be used to specify rough timing information for a route deviation or flexible route segment relative to other parts of the route, or can be left blank if it’s not the first or last stop-time in the trip. If a time is specified, it indicates when service begins in the area.
 
-###Request Stops
+### Request Stops
 
 Many transit systems allow riders to board or alight from a transit vehicle at any location along a route. Alternatively known as “flag stop”, riders can flag down a vehicle at locations other than fixed stops.
 
@@ -75,7 +75,7 @@ The **continuous\_stops** field can have the following non-negative integer valu
 
 If specified as 1, a valid shape must be defined for the trip, in order to indicate the complete path of travel.
 
-###Defining Service Parameters
+### Defining Service Parameters
 
 Demand-responsive transportation services have parameters for request requirements and expected or maximum travel times. Below are additions to the **trips.txt** file that define parameters for the demand-responsive service portions of that trip.
 
@@ -87,9 +87,9 @@ Demand-responsive transportation services have parameters for request requiremen
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
-###Examples
+### Examples
 
-#####Point Deviation, Scheduled Start and Endpoints
+##### Point Deviation, Scheduled Start and Endpoints
 
 The service includes 4 untimed points (Stops B, C, D, and E), which are not served in a predefined order. Riders are required to call the agency in advance to coordinate pickup and dropoff at these stops. The vehicle is regularly scheduled to begin at StopA and return to StopA 30 minutes later.
 
@@ -104,7 +104,7 @@ The service includes 4 untimed points (Stops B, C, D, and E), which are not serv
 | pickup\_type    |          | 2     | 2     | 2     | 2     |       |
 | drop\_off\_type |          | 2     | 2     | 2     | 2     |       |
 
-#####Single Zone, No Defined Stops
+##### Single Zone, No Defined Stops
 
 Let’s consider an agency operating a route with a single demand-response zone.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
 
@@ -124,7 +124,7 @@ In this case, the agency defines a service area in areas.txt with id AreaX.  The
 
 These two stop-time entries start service in *AreaX* at 9 am and stop service in the area at 5 pm.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
 
-#####Single Zone, Defined Endpoints
+##### Single Zone, Defined Endpoints
 
 Let’s now consider an agency operating a route with a single demand-response that has a regular start and end point.  In this case, *StopX* and *StopZ* are the start and end stops, and *AreaX* is the service area served in-between.
 
@@ -140,7 +140,7 @@ Let’s now consider an agency operating a route with a single demand-response t
 | pickup\_type |  | 2 |  |  |
 | drop\_off\_type |  | 2 |  |  |
  
-#####Multiple Zones and Intermediate Stops
+##### Multiple Zones and Intermediate Stops
  
 In this case, the agency builds on the previous example, but now defines a mix of normal stop-time and service-area stop-time entries in **stop\_times.txt**:
 
@@ -158,7 +158,7 @@ In this case, the agency builds on the previous example, but now defines a mix o
 
 In this example, the transit vehicle starts at fixed-stop *StopA*, travels through service area *AreaX*, stops at fixed-stop *StopC*, travels through service area *AreaY*, and finishes service at fixed-stop *StopE*.
 
-#####Intermediate Stops Within Zones
+##### Intermediate Stops Within Zones
 
 In this case, the agency has a fixed start and end stop, a flexible zone between those stops, and fixed stops within the flexible zone.
 
@@ -174,7 +174,7 @@ In this case, the agency has a fixed start and end stop, a flexible zone between
 | pickup\_type |  | 3 |  |  |  |
 | drop\_off\_type |  | 3 |  |  |  |
 
-#####Radius-Based Zones
+##### Radius-Based Zones
 
 Some agencies have a simple methodology for defining demand-response service areas. The zone is typically defined as a particular distance from the base route (eg. ½ mile). For agencies that don’t want to maintain the actual geometry for that corridor, the **start\_service\_area\_radius** and **end\_service\_area\_radius** fields offer a simple way to define a service area.
 
@@ -192,7 +192,7 @@ In the following example, an agency defines a ½ mile (~800 meter) flexible serv
 | pickup\_type |  | 2 |  |  |
 | drop\_off\_type |  | 2 |  |  |
 
-#####Advanced
+##### Advanced
 
 The Cape Cod RTA operates a [flex route](http://www.capecodrta.org/flex-route.htm#map) between Harwich and Provincetown that combines a number of aspects of flexible service: route deviation, request stops, flexible-route segments, etc.
 
