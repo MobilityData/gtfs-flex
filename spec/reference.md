@@ -151,7 +151,7 @@ In this case, the agency builds on the previous example, but now defines a mix o
 | stop\_sequence | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
 | arrival\_time | 09:00:00 |  |  | 09:30:00 |  |  | 10:00:00 |
 | departure\_time | 09:00:00 |  |  | 09:30:00 |  |  | 10:00:00 |
-| start\_service\_area\_id |  | AreaX |  |  |
+| start\_service\_area\_id |  | AreaX |  |  | AreaY | |
 | end\_service\_area\_id |  |  | AreaX |  |  | AreaY |  |
 | pickup\_type |  | 3 |  |  | 3 |  |  |
 | drop\_off\_type |  | 3 |  |  | 3 |  |  |
