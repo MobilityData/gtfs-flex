@@ -27,7 +27,7 @@ A key concept in flexible services is the idea of a service area or zone. These 
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| area_id    | Required   | The **id** field contains an ID that uniquely identifies an area. |
+| area_id    | Required   | The **area_id** field contains an ID that uniquely identifies an area. |
 | lat        | Required   | The **lat** field specifies the latitude of a single point in the area’s polygon. The field value must be a valid WGS84 latitude. |
 | lon        | Required   | The **lon** field specifies the longitude of a single point in the area’s polygon. The field value must be a valid WGS84 longitude. |
 | sequence   | Required   | The **sequence** field associates the latitude and longitude of a single point with its sequence order in the area’s polygon. The value of **sequence** must be a non-negative integers and must increase sequentially between each point in the polygon. |
@@ -108,7 +108,7 @@ The service includes 4 untimed points (Stops B, C, D, and E), which are not serv
 
 Let’s consider an agency operating a route with a single demand-response zone.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
 
-In this case, the agency defines a service area in areas.txt with id AreaX.  The agency also defines a trip in **trips.txt** with id *TripX*.  We also add two entries to **stop\_times.txt**:
+In this case, the agency defines a service area in areas.txt with area_id AreaX.  The agency also defines a trip in **trips.txt** with area_id *TripX*.  We also add two entries to **stop\_times.txt**:
 
 |  |  |  |
 | --- | --- | --- |
@@ -178,7 +178,7 @@ In this case, the agency has a fixed start and end stop, a flexible zone between
 
 Some agencies have a simple methodology for defining demand-response service areas. The zone is typically defined as a particular distance from the base route (eg. ½ mile). For agencies that don’t want to maintain the actual geometry for that corridor, the **start\_service\_area\_radius** and **end\_service\_area\_radius** fields offer a simple way to define a service area.
 
-In the following example, an agency defines a ½ mile (~800 meter) flexible service area around their base route. For this technique to work, the trip with id *TripX* must also specify a **shape\_id** value indicating the path of travel.
+In the following example, an agency defines a ½ mile (~800 meter) flexible service area around their base route. For this technique to work, the trip with trip_id *TripX* must also specify a **shape\_id** value indicating the path of travel.
 
 |  |  |  |  |  | 
 | --- | --- | --- | --- | --- |
