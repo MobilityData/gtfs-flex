@@ -27,7 +27,7 @@ A key concept in flexible services is the idea of a service area or zone. These 
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| id         | Required   | The **id** field contains an ID that uniquely identifies an area. |
+| area_id    | Required   | The **id** field contains an ID that uniquely identifies an area. |
 | lat        | Required   | The **lat** field specifies the latitude of a single point in the area’s polygon. The field value must be a valid WGS84 latitude. |
 | lon        | Required   | The **lon** field specifies the longitude of a single point in the area’s polygon. The field value must be a valid WGS84 longitude. |
 | sequence   | Required   | The **sequence** field associates the latitude and longitude of a single point with its sequence order in the area’s polygon. The value of **sequence** must be a non-negative integers and must increase sequentially between each point in the polygon. |
