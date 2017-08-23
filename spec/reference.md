@@ -66,10 +66,10 @@ One scenario that we did not tackle during the workshop was support for “reque
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| continuous\_pickup | Optional | The **continuous\_stops** field can be used to indicate a section of a trip where it is possible to board the transit vehicle at any point along the vehicle’s path of travel. |
-| continuous\_drop_off | Optional | The **continuous\_stops** field can be used to indicate a section of a trip where it is possible to alight from the transit vehicle at any point along the vehicle’s path of travel. |
+| continuous\_pickup | Optional | The **continuous\_pickup** field can be used to indicate a section of a trip where it is possible to board the transit vehicle at any point along the vehicle’s path of travel. |
+| continuous\_drop\_off | Optional | The **continuous\_drop\_off** field can be used to indicate a section of a trip where it is possible to alight from the transit vehicle at any point along the vehicle’s path of travel. |
 
-The **continuous\_stops** field can have the following non-negative integer values:
+The **continuous\_pickup** and **continuous\_drop\_off** fields can have the following non-negative integer values:
 
 * 0 - Continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
 * 1 or blank - No continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
