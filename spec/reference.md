@@ -66,14 +66,17 @@ One scenario that we did not tackle during the workshop was support for “reque
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| continuous\_stops | Optional | The **continuous\_stops** field can be used to indicate a section of a trip where it is possible to board or alight from the transit vehicle at any point along the vehicle’s path of travel. |
+| continuous\_pickup | Optional | The **continuous\_stops** field can be used to indicate a section of a trip where it is possible to board the transit vehicle at any point along the vehicle’s path of travel. |
+| continuous\_drop_off | Optional | The **continuous\_stops** field can be used to indicate a section of a trip where it is possible to alight from the transit vehicle at any point along the vehicle’s path of travel. |
 
 The **continuous\_stops** field can have the following non-negative integer values:
 
-* 0 or blank - Normal stop behaviour along route (default).
-* 1 - Continuous stopping behaviour from this stop-time to the next stop-time in the trip’s sequence.
+* 0 - Continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
+* 1 or blank - No continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
+* 2 - Must phone agency to arrange continuous stopping behavior.
+* 3 - Must coordinate with driver to arrange continuous stopping behavior.
 
-If specified as 1, a valid shape must be defined for the trip, in order to indicate the complete path of travel.
+If specified as 0, a valid shape must be defined for the trip, in order to indicate the complete path of travel.
 
 ### Defining Service Parameters
 
