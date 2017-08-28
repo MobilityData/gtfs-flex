@@ -90,6 +90,18 @@ Demand-responsive transportation services have parameters for request requiremen
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
+### Transfers
+
+Transfers between fixed route and flexible route transit services are one of the core benefits of modeling flexible services within GTFS. However, the nature of flexible services presents unique difficulties for planning transfers, because of the infinite possible transfer points between flexible services. Below are additions to the **transfers.txt** file that allow transfers.txt to indicated preferred transfer points between flexible routes and other routes.
+
+Two current fields have adjusted descriptions to fit new uses within the flexible context. Those changes to current fields are indicated with **bold text**.
+
+| Field Name | Required? | Details |
+|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| from\_stop\_id | **Optional** | Contains a stop ID that identifies a stop or station where a connection between routes begins. Stop IDs are referenced from the stops.txt file. If the stop ID refers to a station that contains multiple stops, this transfer rule applies to all stops in that station. **If route_id is indicated in the transfers.txt entry, this field indicates rules regarding transfers to the referenced route.** |
+| to\_stop\_id | **Optional** | Defines average or expected travel time demand-responsive passenger travel leg on the trip. Values or functions are expressed in the same way as drt\_max\_travel\_time. **If route_id is indicated in the transfers.txt entry, this field indicates rules regarding transfers from the referenced route.** |
+| route\_id | Optional | A route_id from routes.txt that references a route from or to which the stops referenced are preferred transfer points. |
+
 ### Examples
 
 ##### Point Deviation, Scheduled Start and Endpoints
