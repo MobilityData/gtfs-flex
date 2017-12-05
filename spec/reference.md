@@ -27,7 +27,7 @@ A key concept in flexible services is the idea of a service area or zone. These 
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| area_id    | Required   | The **area_id** field contains an ID that uniquely identifies an area. |
+| area\_id    | Required   | The **area\_id** field contains an ID that uniquely identifies an area. |
 | lat        | Required   | The **lat** field specifies the latitude of a single point in the area’s polygon. The field value must be a valid WGS84 latitude. |
 | lon        | Required   | The **lon** field specifies the longitude of a single point in the area’s polygon. The field value must be a valid WGS84 longitude. |
 | sequence   | Required   | The **sequence** field associates the latitude and longitude of a single point with its sequence order in the area’s polygon. The value of **sequence** must be a non-negative integers and must increase sequentially between each point in the polygon. |
@@ -113,7 +113,7 @@ The service includes 4 untimed points (Stops B, C, D, and E), which are not serv
 
 Let’s consider an agency operating a route with a single demand-response zone.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
 
-In this case, the agency defines a service area in areas.txt with area_id AreaX.  The agency also defines a trip in **trips.txt** with area_id *TripX*.  We also add two entries to **stop\_times.txt**:
+In this case, the agency defines a service area in areas.txt with area\_id AreaX.  The agency also defines a trip in **trips.txt** with area\_id *TripX*.  We also add two entries to **stop\_times.txt**:
 
 |  |  |  |
 | --- | --- | --- |
@@ -201,5 +201,5 @@ In the following example, an agency defines a ½ mile (~800 meter) flexible serv
 
 The Cape Cod RTA operates a [flex route](http://www.capecodrta.org/flex-route.htm#map) between Harwich and Provincetown that combines a number of aspects of flexible service: route deviation, request stops, flexible-route segments, etc.
 
-We can combine the new fields we have defined, including **start\_service\_area\_radius**, **end\_service\_area\_radius**, and **continuous\_stops**, to concisely represent this route and all its flexible characteristics.
+We can combine the new fields we have defined, including **start\_service\_area\_radius**, **end\_service\_area\_radius**, **continuous\_pickup**, and **continuous\_drop\_off**, to concisely represent this route and all its flexible characteristics.
 
