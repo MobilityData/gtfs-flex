@@ -90,6 +90,16 @@ Demand-responsive transportation services have parameters for request requiremen
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
+### Eligibility
+
+Many flexible services are available to the general public, but others require the customer to fall into a certain class of people (e.g. ages 65+, Medicaid recipient) and/or go through an application process. The variety of such systems is extensive, and will not be represented in the current specification pending further research and development. In order to provide a basic level of information about eligibility within flexible trip planners in the near term, the following field will be added to **routes.txt**. A 1 value for eligibility_restricted could be further explained in the drt\_pickup\_message or drt\_drop\_off\_message field, providing the customer with a short message indicating who the service is restricted to or contact information for details.
+
+| Field Name | Required? | Details |
+|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. |
+
+**Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
+
 ### Examples
 
 ##### Point Deviation, Scheduled Start and Endpoints
