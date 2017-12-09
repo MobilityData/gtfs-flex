@@ -96,7 +96,7 @@ Many flexible services are available to the general public, but others require t
 
 | Field Name | Required? | Details |
 |-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. |
+| eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. 2 indicates that while fixed-route stops are open to the general public, deviations are restricted to a certain group of riders.|
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
