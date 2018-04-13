@@ -28,9 +28,7 @@ A key concept in flexible services is the idea of a service area or zone. These 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
 | area_id    | Required   | The **area_id** field contains an ID that uniquely identifies an area. |
-| lat        | Required   | The **lat** field specifies the latitude of a single point in the area’s polygon. The field value must be a valid WGS84 latitude. |
-| lon        | Required   | The **lon** field specifies the longitude of a single point in the area’s polygon. The field value must be a valid WGS84 longitude. |
-| sequence   | Required   | The **sequence** field associates the latitude and longitude of a single point with its sequence order in the area’s polygon. The value of **sequence** must be a non-negative integers and must increase sequentially between each point in the polygon. |
+| wkt        | Required   | The **wkt** field specifies a polygon, multipolygon, or other area in the well-known text (WKT) format. |
 
 Basically, **areas.txt** provides a mechanism for defining polygon regions, identified by id. The coordinates for areas must be specified in counterclockwise order. Areas follow the "right-hand rule," which states that if you place the fingers of your right hand in the direction in which the coordinates are specified, your thumb points in the general direction of the geometric normal for the polygon.
 
