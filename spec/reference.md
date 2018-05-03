@@ -27,10 +27,8 @@ A key concept in flexible services is the idea of a service area or zone. These 
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
-| area\_id    | Required   | The **area\_id** field contains an ID that uniquely identifies an area. |
-| lat        | Required   | The **lat** field specifies the latitude of a single point in the area’s polygon. The field value must be a valid WGS84 latitude. |
-| lon        | Required   | The **lon** field specifies the longitude of a single point in the area’s polygon. The field value must be a valid WGS84 longitude. |
-| sequence   | Required   | The **sequence** field associates the latitude and longitude of a single point with its sequence order in the area’s polygon. The value of **sequence** must be a non-negative integers and must increase sequentially between each point in the polygon. |
+| area_id    | Required   | The **area_id** field contains an ID that uniquely identifies an area. |
+| wkt        | Required   | The **wkt** field specifies a polygon, multipolygon, or other area in the well-known text (WKT) format. |
 
 Basically, **areas.txt** provides a mechanism for defining polygon regions, identified by id. The coordinates for areas must be specified in counterclockwise order. Areas follow the "right-hand rule," which states that if you place the fingers of your right hand in the direction in which the coordinates are specified, your thumb points in the general direction of the geometric normal for the polygon.
 
@@ -91,6 +89,16 @@ Demand-responsive transportation services have parameters for request requiremen
 | drt\_drop\_off\_message | Optional | Message to be communicated to passengers if being dropped off by a deviated service during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
 | continuous\_pickup\_message | Optional | Message to be communicated to passengers if flagging a vehicle for pickup between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
 | continuous\_drop\_off\_message | Optional | Message to be communicated to passengers if requesting a drop off between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
+
+**Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
+
+### Eligibility
+
+Many flexible services are available to the general public, but others require the customer to fall into a certain class of people (e.g. ages 65+, Medicaid recipient) and/or go through an application process. The variety of such systems is extensive, and will not be represented in the current specification pending further research and development. In order to provide a basic level of information about eligibility within flexible trip planners in the near term, the following field will be added to **routes.txt**. A 1 value for eligibility_restricted could be further explained in the drt\_pickup\_message or drt\_drop\_off\_message field, providing the customer with a short message indicating who the service is restricted to or contact information for details.
+
+| Field Name | Required? | Details |
+|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. 2 indicates that while fixed-route stops are open to the general public, deviations are restricted to a certain group of riders.|
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
