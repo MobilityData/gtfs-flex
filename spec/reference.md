@@ -85,6 +85,10 @@ Demand-responsive transportation services have parameters for request requiremen
 | drt\_max\_travel\_time | Optional | Defines maximum travel time for a demand-responsive passenger travel leg on the trip. This time may be expressed as a value (minutes), or as an arithmetic function where t=[direct travel time]. For example, the formula t*2.5+5 indicates that the maximum travel time for the passenger's demand-responsive travel leg is 30 minutes if the direct travel time is 10 minutes. |
 | drt\_avg\_travel\_time | Optional | Defines average or expected travel time demand-responsive passenger travel leg on the trip. Values or functions are expressed in the same way as drt\_max\_travel\_time. |
 | drt\_advance\_book\_min | Optional | Minutes of advance time necessary before travel to make booking request. |
+| drt\_pickup\_message | Optional | Message to be communicated to passengers if being picked up by a deviated service during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
+| drt\_drop\_off\_message | Optional | Message to be communicated to passengers if being dropped off by a deviated service during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
+| continuous\_pickup\_message | Optional | Message to be communicated to passengers if flagging a vehicle for pickup between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
+| continuous\_drop\_off\_message | Optional | Message to be communicated to passengers if requesting a drop off between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
@@ -119,7 +123,7 @@ The service includes 4 untimed points (Stops B, C, D, and E), which are not serv
 
 Let’s consider an agency operating a route with a single demand-response zone.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
 
-In this case, the agency defines a service area in areas.txt with area_id AreaX.  The agency also defines a trip in **trips.txt** with area_id *TripX*.  We also add two entries to **stop\_times.txt**:
+In this case, the agency defines a service area in areas.txt with area\_id AreaX.  The agency also defines a trip in **trips.txt** with area\_id *TripX*.  We also add two entries to **stop\_times.txt**:
 
 |  |  |  |
 | --- | --- | --- |
@@ -207,5 +211,5 @@ In the following example, an agency defines a ½ mile (~800 meter) flexible serv
 
 The Cape Cod RTA operates a [flex route](http://www.capecodrta.org/flex-route.htm#map) between Harwich and Provincetown that combines a number of aspects of flexible service: route deviation, request stops, flexible-route segments, etc.
 
-We can combine the new fields we have defined, including **start\_service\_area\_radius**, **end\_service\_area\_radius**, and **continuous\_stops**, to concisely represent this route and all its flexible characteristics.
+We can combine the new fields we have defined, including **start\_service\_area\_radius**, **end\_service\_area\_radius**, **continuous\_pickup**, and **continuous\_drop\_off**, to concisely represent this route and all its flexible characteristics.
 
