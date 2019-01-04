@@ -1,4 +1,6 @@
-This directory contains the GTFS-flex specification and documentation.
+This directory contains the "Version 1" GTFS-flex specification and documentation. Data following the specification laid out in this repository can be found at http://vermont-gtfs.org, and is in use by the [GoVermont Flexible Trip Planner](http://plan.govermont.org). The trip planner utilizes the open source [OpenTripPlanner](http://www.opentripplanner.org/), and the code for the flexible transit routing is in the process of being merged into the coming OTP 1.4.
+
+Drawing from the development of GTFS-flex data in Vermont, MobilityData has begun an effort to refine and propose changes to the GTFS specification following the objectives of the GTFS-flex project. This new work by MobilityData constitutes a "Version 2" of the spec, which is under development [here](http://bit.ly/gtfs-drt). At this time, discussion of the specification proposal should be centered on the text in that Google Document.
 
 ### About GTFS-flex
 
