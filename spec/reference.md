@@ -23,7 +23,7 @@ Note that if a **shape_id** is specified for a trip that includes stops where **
 
 ### Defining Areas
 
-A key concept in flexible services is the idea of a service area or zone. These zones are used define the region where demand-response operation is in effect. We propose a model for defining these regions in GTFS. Because “zone” also tends to get conflated with discussions of fare systems, we propose calling general polygons “areas”. As such, we propose introducing a new file, **areas.txt**, with the following fields:
+A key concept in flexible services is the idea of a service area or zone. These zones are used to define the region where demand-response operation is in effect. We propose a model for defining these regions in GTFS. Because “zone” also tends to get conflated with discussions of fare systems, we propose calling general polygons “areas”. As such, we propose introducing a new file, **areas.txt**, with the following fields:
 
 | Field Name | Required?  | Details |
 |------------|------------|---------|
