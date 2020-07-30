@@ -99,6 +99,7 @@ Many flexible services are available to the general public, but others require t
 | Field Name | Required? | Details |
 |-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. 2 indicates that while fixed-route stops are open to the general public, deviations are restricted to a certain group of riders.|
+| eligibility\_message | Optional | Message to be communicated to passengers. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
 
 **Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
 
