@@ -8,8 +8,6 @@ GTFS-flex is a proposed extension to the [General Transit Feed Specification](ht
 
 [See the GTFS-flex proposal here.](spec/reference.md)
 
-[More information about GTFS-flex can be found in the N-CATT GTFS-flex white paper.]()
-
 ### Spec extension schematic diagram
 
 The below shows updated and added files in GTFS-flex, compared to the current GTFS (original diagram is [here](https://docs.google.com/drawings/d/1g1kuTZPLFphMa942htywksIhxXqM_mMFCROOiEw5eNo/edit?usp=sharing)).
