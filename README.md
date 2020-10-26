@@ -12,6 +12,6 @@ GTFS-flex is a proposed extension to the [General Transit Feed Specification](ht
 
 ### Spec extension schematic diagram
 
-The below shows updated and added files in GTFS-flex, compared to the current GTFS (original Google Drawing is [here](https://docs.google.com/drawings/d/1g1kuTZPLFphMa942htywksIhxXqM_mMFCROOiEw5eNo/edit?usp=sharing)).
+The below shows updated and added files in GTFS-flex, compared to the current GTFS (original diagram is [here](https://docs.google.com/drawings/d/1g1kuTZPLFphMa942htywksIhxXqM_mMFCROOiEw5eNo/edit?usp=sharing)).
 
-![Diagram of added files in GTFS-flex](spec/GTFS%20and%20GTFS-flex.jpg)
+![Diagram of added files in GTFS-flex](spec/GTFS_GTFS-flex_2.1_Schema_Diagram.png)
