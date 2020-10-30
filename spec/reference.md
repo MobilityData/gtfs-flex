@@ -95,7 +95,7 @@ Many flexible services included in the **GTFS-FlexibleTrips** extension must be 
 stop_times.txt (file extended)
 | Field Name | Details |
 | ---------- | ------- |
-| `pickup_booking_rules_id` | (ID, Optional) Defines the boarding booking rules for this stop time, overwriting the default trip booking rule.<br><br>It is strongly recommended to have a booking rule defined (either at the trip or the stop time level) when `pickup_type=2`. |
+| `pickup_booking_rule_id` | (ID, Optional) Defines the boarding booking rules for this stop time, overwriting the default trip booking rule.<br><br>It is strongly recommended to have a booking rule defined (either at the trip or the stop time level) when `pickup_type=2`. |
 | `drop_off_booking_rule_id` | (ID, Optional) Defines the alighting booking rules for this stop time, overwriting the default trip booking rule.<br><br>It is strongly recommended to have a booking rule defined (either at the trip or the stop time level) when `drop_off_type=2`. |
 
 booking_rules.txt (file added)
