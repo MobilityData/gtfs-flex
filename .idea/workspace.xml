@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6efee874-36a5-4b3a-8f16-de786d985a88" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spec/reference.md" beforeDir="false" afterPath="$PROJECT_DIR$/spec/reference.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,6 +23,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="full.screen.before.presentation.mode" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="settings.editor.selected.configurable" value="preferences.customizations" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -37,6 +39,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="221" y="100" key="SettingsEditor" timestamp="1606936546945">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="221" y="100" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1606936546945" />
     <state x="1330" y="348" width="670" height="676" key="search.everywhere.popup" timestamp="1606842349612">
       <screen x="0" y="23" width="2560" height="1417" />
     </state>
