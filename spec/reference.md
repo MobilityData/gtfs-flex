@@ -48,7 +48,7 @@ In order for a trip planner to provide a user with information about how to requ
 
 | Field Name | Type | Required | Description |
 | ---------- | ---- | ------------ | ----------- |
-| `location_group_id` | ID | **Required** | Identifies a location group. A location group is a group of stops or GeoJSON locations that together indicate locations where a rider may request pickup or drop off.<br><br> By default, every `stop_id` and `id` from `locations.geojson` belong to a `location_group_id` of the same value. Therefore, it is forbidden to define a `location_group_id` with the same value as a `stop_id` or `id` from `locations.geojson`.<br><br>Multiple entries in `location_groups.txt` can have the same `location_group_id`. | 
+| `location_group_id` | ID | **Required** | Identifies a location group. A location group is a group of stops or GeoJSON locations that together indicate locations where a rider may request pickup or drop off.<br><br> By default, every `stop_id` and `id` from `locations.geojson` belongs to a `location_group_id` of the same value. Therefore, it is forbidden to define a `location_group_id` with the same value as a `stop_id` or `id` from `locations.geojson`.<br><br>Multiple entries in `location_groups.txt` can have the same `location_group_id`. | 
 | `location_id` | ID referencing `stops.stop_id` or `id` from `locations.geojson` | Optional | Identifies a stop or location belonging to the location group. |
 | `location_group_name` | Text | Optional | Name of the location group. Must be defined either once, or exhaustively for a single `location_group_id`. |
 
