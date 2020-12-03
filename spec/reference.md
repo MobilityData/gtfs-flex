@@ -58,7 +58,7 @@ In order for a trip planner to provide a user with information about how to requ
 - A `FeatureCollection` defines various stop locations where riders may request pickup or drop off.
 - Only features with types `LineString`, `MultiLineString`, `Polygon` and `MultiPolygon` are allowed. Individual stops should be defined in `stops.txt`.
 - Every GeoJSON `Feature` must have an `id`. The `id` belongs to the same namespace as `stop_id` in `stops.txt` and `location_group_id` in `location_groups.txt`, called “stop locations”.
-- Every GeoJSON `Feature` must have a `properties` object with the following keys:
+- Every GeoJSON `Feature` must have a `properties` object, which may have the following keys:
 
 | Field Name | Required | Type | Description |
 | ----- | ----- | ----- | ----- |
