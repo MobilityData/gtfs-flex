@@ -1,215 +1,132 @@
-## Flexible Public Transportation Services in GTFS
+# GTFS-Flex v2
+Flexible public transit services in GTFS.
 
-### Table of Contents
+## Overview
 
-* [Point Deviation](#point-deviation)
-* [Defining Areas](#defining-areas)
-* [Route Deviation](#route-deviation)
-* [Request Stops](#request-stops)
-* [Defining Service Parameters](#defining-service-parameters)
-* [Examples](#examples)
+GTFS-Flex v2 is composed of two extensions that aim to model the variety of demand responsive services that do not always follow the same fixed stops. The following two extensions address this need:
 
-### Point Deviation
+| Extension name | Description |
+| ----- | ----- |
+| **[GTFS-FlexibleTrips](#gtfs-flexibletrips)** | Flexible services that operate according to some schedule but are responsive to on-demand requests of individual riders. |
+| **[GTFS-BookingRules](#gtfs-bookingrules)** | Booking information for rider-requested services using **GTFS-FlexibleTrips**, such as how far in advance booking should occur or a phone number that should be called. |
 
-The existing GTFS assumes that stops are served in an order, defined by stop\_sequence. In order to describe a point-deviation service, specification needs the capability to override this assumption.
+## GTFS-FlexibleTrips
 
-Proposed: A new field in **stop_times.txt**, **unordered**.
+### Goals
+This extension describes services that operate according to a schedule, but also include one or more flexible features, such as:
 
-| Field Name | Required?  | Details |
-|------------|------------|---------|
-| unordered  | Optional   | Consecutive values of 1 indicate a block of stops (deviation points) are not served in a predetermined order. This block is interrupted by a 0 value. Empty or other values are presumed to be 0. |
+- **Dial-a-ride service**: the vehicle serves a zone where pickups and drop offs are allowed during certain service hours.
+- **Route deviation services**: the vehicle serves a fixed route and ordered set of stops, and may detour to pick up or drop off a passenger between stops.
+- **Point-to-zone service**: the rider can board at a fixed stop such as a train station, and then alight anywhere within an area, or vice versa. Departures from some locations are scheduled or timed with other services.
+- **Point deviation or checkpoint service**: the rider can board at a fixed stop, and then alight anywhere among an unordered list of stops, or the opposite. The driver only serves stops at which a request is made.
+- **Hail-and-ride services**: the vehicle stays along a fixed path, but the rider can request a stop anywhere along the path to board or alight.
 
-Note that if a **shape_id** is specified for a trip that includes stops where **unordered = 1**, then **shape\_dist\_traveled** must be specified in **stop_times.txt** and **shapes.txt**. The correspondence of **shape\_dist\_traveled** values must make it clear that there is no alignment specified for the block of deviation points.
+GTFS-FlexibleTrips describes the times when and locations where flexible service can be requested.
 
-### Defining Areas
+### Overview
+This extension
 
-A key concept in flexible services is the idea of a service area or zone. These zones are used define the region where demand-response operation is in effect. We propose a model for defining these regions in GTFS. Because “zone” also tends to get conflated with discussions of fare systems, we propose calling general polygons “areas”. As such, we propose introducing a new file, **areas.txt**, with the following fields:
+- **Describes locations and groups of locations where riders can request pickup or drop off**: these locations are included in new files called `location_groups.txt` and `locations.geojson`
+- **Indicates the times when services are available at on demand locations and the expected travel times**: new fields in `stop_times.txt` provide ranges that equate to service hours and expected travel times on demand trips
+- **Clarifies elements of the current specification necessary to inform data consumers of how to interpret the above files and fields added**: new fields in `stop_times.txt` provide ranges that equate to service hours or expected traversal times for locations
 
-| Field Name | Required?  | Details |
-|------------|------------|---------|
-| area_id    | Required   | The **area_id** field contains an ID that uniquely identifies an area. |
-| wkt        | Required   | The **wkt** field specifies a polygon, multipolygon, or other area in the well-known text (WKT) format. |
+### Requirements
+None. Extends the GTFS.
 
-Basically, **areas.txt** provides a mechanism for defining polygon regions, identified by id. The coordinates for areas must be specified in counterclockwise order. Areas follow the "right-hand rule," which states that if you place the fingers of your right hand in the direction in which the coordinates are specified, your thumb points in the general direction of the geometric normal for the polygon.
+In order for a trip planner to provide a user with information about how to request many flexible services, data producers must also provide information according to the **GTFS-BookingRules** extension.
 
-### Route Deviation
+### Files extended or added
+| File name | State | Defines |
+| --------- | ----- | ------- |
+| `location_groups.txt` | Added | (Optional file) Adds location groups. Location groups are groups of stops and GeoJSON locations, which allow predetermined groups of these features to be specified on individual rows of `stop_times.txt`. |
+| `locations.geojson` | Added | (Optional file) Adds GeoJSON locations, which are `LineString`, `MultiLineString`, `Polygon` and `MultiPolygon` features that indicate groups of lat/lon coordinates where riders can request either pickup or drop off. |
+| `stop_times.txt` | Extended and modified |
 
-As discussed, flexible routes can use service areas and zones in a variety of ways. Some routes provide demand-response services with a single fixed zone, while others offer regions of flexible services along an otherwise fixed route, while yet others use combinations of the two.
+### File definitions
 
-To support this flexibility in GTFS, we propose augmenting the functionality of **stop_times.txt** by allowing a provider to associate service areas with particular stop-time entry.
+#### location_groups.txt (file added)
 
-Specifically, we propose the following additions to **stop_times.txt**:
+| Field Name | Type | Required | Description |
+| ---------- | ---- | ------------ | ----------- |
+| `location_group_id` | ID | **Required** | Identifies a location group. A location group is a group of stops or GeoJSON locations that together indicate locations where a rider may request pickup or drop off.<br><br> By default, every `stop_id` and `id` from `locations.geojson` belongs to a `location_group_id` of the same value. Therefore, it is forbidden to define a `location_group_id` with the same value as a `stop_id` or `id` from `locations.geojson`.<br><br>Multiple entries in `location_groups.txt` can have the same `location_group_id`. | 
+| `location_id` | ID referencing `stops.stop_id` or `id` from `locations.geojson` | Optional | Identifies a stop or location belonging to the location group. |
+| `location_group_name` | Text | Optional | Name of the location group. Must be defined either once, or exhaustively for a single `location_group_id`. |
 
-| Field Name | Required?  | Details |
-|------------|------------|---------|
-| start\_service\_area\_id | Optional | The **start\_service\_area\_id** specifies the id of a service area defined in the areas.txt file. When specified for a stop-time entry, it indicates the beginning of service in the specified service area and that the transit vehicle may potentially pick-up or drop-off passenger anywhere in the specified service area, as controlled by the **pickup\_type** and **drop\_off\_type** fields. Must be followed by a corresponding stop-time entry in the trip with a matching **end\_service\_area\_id** value. | 
-| end\_service\_area\_id | Optional | The **end\_service\_area\_id** specifies the id of a service area defined in the **areas.txt** file. When specified for a stop-time entry, it indicates the end of service in the specified service area. Must be preceded by a corresponding stop-time entry in the trip with a matching **start\_service\_area\_id** value. The **pickup\_type** and **drop\_off\_type** fields will be ignored for this stop-time entry. |
-| start\_service\_area\_radius | Optional | The **start\_service\_area\_radius** field provides a convenient way to construct a service area without the need to define an area in **areas.txt**.  When specified, it indicates a distance in meters from the main path of travel for the trip where service is offered. The trip must specify a **shape\_id** if **start\_service\_area\_radius** is specified. The **start\_service\_area\_radius** field has the same semantics as **start\_service\_area\_id** in terms of pickup/dropoff semantics. |
-| end\_service\_area\_radius | Optional | The **end\_service\_area\_radius** specifies the end of an area started by a stop-time entry with a **start\_service\_area\_radius** field. Must be preceded by a corresponding stop-time entry in the trip with the same **start\_service\_area\_radius** value. The **pickup\_type** and **drop\_off\_type** fields will be ignored for this stop-time entry. |
+#### locations.geojson (file added)
+- This file uses a subset of the GeoJSON format, described in [RFC 7946](https://tools.ietf.org/html/rfc7946).
+- The `locations.geojson` file must contain a `FeatureCollection`.
+- A `FeatureCollection` defines various stop locations where riders may request pickup or drop off.
+- Only features with types `LineString`, `MultiLineString`, `Polygon` and `MultiPolygon` are allowed. Individual stops should be defined in `stops.txt`.
+- Every GeoJSON `Feature` must have an `id`. The `id` belongs to the same namespace as `stop_id` in `stops.txt` and `location_group_id` in `location_groups.txt`, called “stop locations”.
+- Every GeoJSON `Feature` must have a `properties` object, which may have the following keys:
 
-Regarding **stop\_id**, two possibilities:
+| Field Name | Required | Type | Description |
+| ----- | ----- | ----- | ----- |
+| -&nbsp;`type` | **Required** | String | `"FeatureCollection"` of locations. |
+| -&nbsp;`features` | **Required** | Array | Collection of `"Feature"` objects describing the locations. |
+| &emsp;\-&nbsp;`type` | **Required** | String | `"Feature"` |
+| &emsp;\-&nbsp;`id` | **Required** | String| Location ID belonging to the same namespace as `stops.stop_id`. Therefore, it is forbidden to define an `id` from `locations.geojson` with the same value as a `stops.stop_id`.<br><br>By default, every `id` from `locations.geojson` belongs to a `location_groups.location_group_id` of the same value.|
+| &emsp;\-&nbsp;`properties` | **Required** | Object | Location property keys. |
+| &emsp;&emsp;\-&nbsp;`stop_name` | Optional | String | Indicates the name of the location as displayed to riders. |
+| &emsp;&emsp;\-&nbsp;`stop_desc` | Optional | String | Meaningful description of the location to help orient riders. |
+| &emsp;&emsp;\-&nbsp;`zone_id` | **Conditionally Required** | String | Identifies the fare zone for a stop.<br><br>Conditionally required:<br>- **Required** if `fare_rules.txt` is defined.<br>- Optional otherwise.|
+| &emsp;&emsp;\-&nbsp;`stop_url` | Optional | URL |  URL of a web page about the location.<br><br>If provided, the URL should be different from the `agency.agency_url` and the `routes.route_url` field values. |
+| &emsp;\-&nbsp;`geometry` | **Required** | Object | Geometry of the location. |
+| &emsp;&emsp;\-&nbsp;`type` | **Required** | String | Must be of type:<br>-&nbsp;`"Linestring"`<br>-&nbsp;`"MutiLineString"`<br>-&nbsp;`"Polygon"`<br>-&nbsp;`"MultiPolygon"` |
+| &emsp;&emsp;\-&nbsp;`coordinates` | **Required** | Array | Geographic coordinates (latitude and longitude) defining the geometry of the location. |
 
-* We allow **stop\_id** to be empty when **start\_service\_area\_id** has been specified. This breaks the idea that **stop\_id** is always required, but is conceptually cleaner.
-* We still require **stop\_id** to be specified. It should specify a stop at the center of the service area and might be used to provide additional data for the service area (name? url? fare zone?).
+#### stop_times.txt (file extended)
 
-Regarding **arrival\_time** and **departure\_time**, these fields can be used to specify rough timing information for a route deviation or flexible route segment relative to other parts of the route, or can be left blank if it’s not the first or last stop-time in the trip. If a time is specified, it indicates when service begins in the area.
+| Field Name | Type | Required | Description |
+| ---------- | ---- | -------- | ----------- |
+| `stop_id` | ID referencing `stops.stop_id`, `location_groups.location_group_id`, or `id` from `locations.geojson`  | **Required** | Identifies the serviced stop. All stops serviced during a trip must have a record in `stop_times.txt`. Referenced locations must be stops, not stations or station entrances. A stop may be serviced multiple times in the same trip, and multiple trips and routes may service the same stop.<br><br>If service is on demand, a GeoJSON location or location group can be referenced:<br>-&nbsp;`id` from `locations.geojson`<br>-&nbsp;`location_groups.location_group_id` |
+| `arrival_time` | Time | **Conditionally Required** |Arrival time at a specific stop for a specific trip on a route. If there are not separate times for arrival and departure at a stop, enter the same value for `arrival_time` and `departure_time`.<br><br> Scheduled stops where the vehicle strictly adheres to the specified arrival and departure times are timepoints. If this stop is not a timepoint, it is recommended to provide an estimated or interpolated time. If this is not available, `arrival_time` can be left empty. Further, indicate that interpolated times are provided with `timepoint=0`. If interpolated times are indicated with `timepoint=0`, then time points must be indicated with `timepoint=1`. Provide arrival times for all stops that are timepoints.<br><br>**Conditionally Required**:<br>-&nbsp;**Required** for the first and the last stop in a trip.<br>-&nbsp;**Forbidden** when `stop_times.stop_id` references a `location_groups.locationg_group_id` or an `id` from `locations.geojson`.|
+| `departure_time` | Time | **Conditionally Required** | Departure time from a specific stop for a specific trip on a route.  If there are not separate times for arrival and departure at a stop, enter the same value for `arrival_time` and `departure_time`. See the `arrival_time` description for more details about using timepoints correctly.<br><br>The `departure_time` field should specify time values whenever possible, including non-binding estimated or interpolated times between timepoints.<br><br>**Conditionally Required**:<br>-&nbsp;**Required** for the first and the last stop in a trip.<br>-&nbsp;**Forbidden** when `stop_times.stop_id` references a `location_groups.locationg_group_id` or an `id` from `locations.geojson`.|
+| `start_pickup_dropoff_window` | Time | **Conditionally Required** | Time that on-demand service becomes available in a GeoJSON location or location group.<br><br>**Conditionally Required**:<br>-&nbsp;**Required** if `stop_times.stop_id` refers to `location_groups.location_group_id` or `id` from `locations.geojson`. <br>-&nbsp;**Forbidden** if `stop_times.stop_id` refers to `stops.stop_id`. |
+| `end_pickup_dropoff_window` | Time | **Conditionally Required** | Time that on-demand service ends in a GeoJSON location or location group.<br><br>**Conditionally Required**:<br>-&nbsp;**Required** if `stop_times.stop_id` refers to `location_groups.location_group_id` or `id` from `locations.geojson`. <br>-&nbsp;**Forbidden** if `stop_times.stop_id` refers to `stops.stop_id`. |
+| `pickup_type` | Enum | **Conditionally Optional** | Indicates pickup method. Valid options are:<br><br> `0` or empty - Regularly scheduled pickup.<br> `1` - No pickup available.<br> `2` - Must phone agency to arrange pickup.<br> `3` - Must coordinate with driver to arrange pickup.<br><br>  **Conditionally Optional**: <br>- `pickup_type=0` **forbidden** for `stop_times.stop_id` referring to `location_groups.location_group_id` or `id` from `locations.geojson`.<br> - `pickup_type=3` **forbidden** for `location_groups.location_group_id` or `locations.geojson` that are not a single `"LineString"`.<br> - Optional otherwise. |
+| `drop_off_type` | Enum | **Conditionally Optional** | Indicates drop off method. Valid options are:<br><br> `0` or empty - Regularly scheduled drop off.<br> `1` - No drop off available.<br> `2` - Must phone agency to arrange drop off.<br> `3` - Must coordinate with driver to arrange drop off.<br><br> **Conditionally Optional**:<br> - `drop_off_type=0` **forbidden** for `stop_times.stop_id` referring to `location_groups.location_group_id` or `id` from `locations.geojson`.<br> - Optional otherwise.
+| `mean_duration_factor`<br><br>and<br><br>`mean_duration_offset` | Float | **Conditionally Optional** | Together, `mean_duration_factor` and `mean_duration_offset` allow an estimation of the duration a rider’s trip will take using the on-demand service in a GeoJSON location or location group.<br><br> Data consumers are expected to use `mean_duration_factor` and `mean_duration_offset` to make the following calculation:<br><br>`MeanTravelDuration = mean_duration_factor × DrivingDuration + mean_duration_offset`<br><br>Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `MeanTravelDuration` is the calculated average time one expects to travel the same trip using the on-demand service.<br><br>The `MeanTravelDuration` may be calculated for the time and the day of the trip to take into account traffic; in other words the consumer is expected to know that `DrivingDuration` is dynamic. Producers should thus provide values that reflect increases in `DrivingDuration` due to additional pickups and drop offs beyond that of the passenger. A downtown TNC will likely always have a `mean_duration_factor` of 1, with or without traffic, since it goes with the flow. But a shared service can have a factor of 2 or more if many additional pickups and drop offs are expected. `mean_duration_offset` can be utilized to increase travel times of shorter trips relatively more than times for longer trips.<br><br>While traveling through undefined space between GeoJSON locations or location groups, it is assumed that:<br><br>`MeanTravelDuration = DrivingDuration`<br><br>**Conditionally Optional**:<br>- **Forbidden** if `stop_times.stop_id` does not refer to a `location_groups.location_group_id` or an `id` from `locations.geojson`.<br>- Optional otherwise. |
+| `safe_duration_factor`<br><br>and<br><br>`safe_duration_offset` | Float | **Conditionally Optional** | Together, `safe_duration_factor` and `safe_duration_offset` allow an estimation of the longest amount of time a rider can expect the on-demand service in a GeoJSON location or location group may require, for 95% of trips.<br><br> Data consumers are expected to use `safe_duration_factor` and `safe_duration_offset` to make the following calculation:<br><br> `SafeTravelDuration = safe_duration_factor × DrivingDuration + safe_duration_offset`<br><br> Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `SafeTravelDuration` is the longest amount of time a rider can expect the on-demand service in a GeoJSON location or location group may require.<br><br>**Conditionally Optional**:<br>- **Forbidden** if `stop_times.stop_id` does not refer to a `location_groups.location_group_id` or an `id` from `locations.geojson`.<br>- Optional otherwise. |
 
-### Request Stops
+## GTFS-BookingRules
 
-Many transit systems allow riders to board or alight from a transit vehicle at any location along a route. Alternatively known as “flag stop”, riders can flag down a vehicle at locations other than fixed stops.
+### Goals
+Many flexible services included in the **GTFS-FlexibleTrips** extension must be booked in advance and/or by using a phone or the internet. This extension provides the rider with information about how to request service.
 
-At the GTFS For the Rest of Us Workshop in Washington, DC (Nov 2013), we came up with a proposal for specifying request stops called “continuous stops”. In this proposal, a route can be annotated as supported continuous stops, such that a rider can board or alight from a transit vehicle at any point along the route, as determined by the route’s shape. See the proposal doc for more details.
+### Requirements
+None. Extends the GTFS.
 
-One scenario that we did not tackle during the workshop was support for “request stops” for sub-sections of a route.  We’d now like to propose such a mechanism with the following new fields in **stop\_times.txt**:
+### Files extended or added
+| File Name | State | Defines |
+| --------- | ----- | ------- |
+| `stop_times.txt` | Extended | Adds links to booking rules. |
+| `booking_rules.txt` | Added | Defines the booking rules. |
 
-| Field Name | Required?  | Details |
-|------------|------------|---------|
-| continuous\_pickup | Optional | The **continuous\_pickup** field can be used to indicate a section of a trip where it is possible to board the transit vehicle at any point along the vehicle’s path of travel. |
-| continuous\_drop\_off | Optional | The **continuous\_drop\_off** field can be used to indicate a section of a trip where it is possible to alight from the transit vehicle at any point along the vehicle’s path of travel. |
+### Table Definitions
+#### stop_times.txt (file extended)
 
-The **continuous\_pickup** and **continuous\_drop\_off** fields can have the following non-negative integer values:
+| Field Name | Type | Required | Description |
+| ---------- | ---- | -------- | ----------- |
+| `pickup_booking_rule_id` | ID referencing `booking_rules.booking_rule_id` | Optional | Identifies the boarding booking rule at this stop time.<br><br>Recommended when `pickup_type=2`. |
+| `drop_off_booking_rule_id` | ID referencing `booking_rules.booking_rule_id` | Optional | Identifies the alighting booking rule at this stop time.<br><br>Recommended when `drop_off_type=2`. |
 
-* 0 - Continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
-* 1 or blank - No continuous stopping behavior from this stop-time to the next stop-time in the trip’s sequence.
-* 2 - Must phone agency to arrange continuous stopping behavior.
-* 3 - Must coordinate with driver to arrange continuous stopping behavior.
+#### booking_rules.txt (file added)
 
-If specified as 0, a valid shape must be defined for the trip, in order to indicate the complete path of travel.
-
-### Defining Service Parameters
-
-Demand-responsive transportation services have parameters for request requirements and expected or maximum travel times. Below are additions to the **trips.txt** file that define parameters for the demand-responsive service portions of that trip.
-
-| Field Name | Required? | Details |
-|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| drt\_max\_travel\_time | Optional | Defines maximum travel time for a demand-responsive passenger travel leg on the trip. This time as an arithmetic function in the form xt+c where t=[direct travel time], x and c are constants. For example, the formula 2.5t+5 indicates that the maximum travel time for the passenger's demand-responsive travel leg is 30 minutes if the direct travel time is 10 minutes. |
-| drt\_avg\_travel\_time | Optional | Defines average or expected travel time demand-responsive passenger travel leg on the trip. Values or functions are expressed in the same way as drt\_max\_travel\_time. |
-| drt\_advance\_book\_min | Optional | Minutes of advance time necessary before travel to make booking request. |
-| drt\_pickup\_message | Optional | Message to be communicated to passengers if being picked up by a deviated service during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
-| drt\_drop\_off\_message | Optional | Message to be communicated to passengers if being dropped off by a deviated service during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
-| continuous\_pickup\_message | Optional | Message to be communicated to passengers if flagging a vehicle for pickup between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
-| continuous\_drop\_off\_message | Optional | Message to be communicated to passengers if requesting a drop off between designated stops during this trip. The message is meant to provide the minimum information to be transmitted within a user interface. If extensive information is required, it should be provided through a phone number, url, or future communication with the end user. |
-
-**Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
-
-### Eligibility
-
-Many flexible services are available to the general public, but others require the customer to fall into a certain class of people (e.g. ages 65+, Medicaid recipient) and/or go through an application process. The variety of such systems is extensive, and will not be represented in the current specification pending further research and development. In order to provide a basic level of information about eligibility within flexible trip planners in the near term, the following field will be added to **routes.txt**. A 1 value for eligibility_restricted could be further explained in the drt\_pickup\_message or drt\_drop\_off\_message field, providing the customer with a short message indicating who the service is restricted to or contact information for details.
-
-| Field Name | Required? | Details |
-|-------------------------|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| eligibility\_restricted | Optional | 0 or blank indicates the service is open to the general public. 1 indicates that the service is restricted to a certain group of riders. 2 indicates that while fixed-route stops are open to the general public, deviations are restricted to a certain group of riders.|
-
-**Alternative consideration:** These service parameters could be included in **areas.txt** or **stop_times.txt** for more granular specificity.
-
-### Examples
-
-##### Point Deviation, Scheduled Start and Endpoints
-
-The service includes 4 untimed points (Stops B, C, D, and E), which are not served in a predefined order. Riders are required to call the agency in advance to coordinate pickup and dropoff at these stops. The vehicle is regularly scheduled to begin at StopA and return to StopA 30 minutes later.
-
-|                 |          |       |       |       |       |       |
-|-----------------|----------|-------|-------|-------|-------|-------|
-| trip\_id        | TripX    | TripX | TripX | TripX | TripX | TripX |
-| stop\_id        | StopA    | StopB | StopC | StopD | StopE | StopA |
-| stop\_sequence  | 0        | 1     | 2     | 3     | 4     | 5     |
-| unordered       | 0        | 1     | 1     | 1     | 1     | 0     |
-| arrival\_time   | 09:00:00 |       |       |       |       | 9:30  |
-| departure\_time | 09:00:00 |       |       |       |       | 9:30  |
-| pickup\_type    |          | 2     | 2     | 2     | 2     |       |
-| drop\_off\_type |          | 2     | 2     | 2     | 2     |       |
-
-##### Single Zone, No Defined Stops
-
-Let’s consider an agency operating a route with a single demand-response zone.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
-
-In this case, the agency defines a service area in areas.txt with area\_id AreaX.  The agency also defines a trip in **trips.txt** with area\_id *TripX*.  We also add two entries to **stop\_times.txt**:
-
-|  |  |  |
-| --- | --- | --- |
-| trip\_id | TripX | TripX |
-| stop\_id | StopX | StopX |
-| stop\_sequence | 0 | 1 |
-| arrival\_time | 09:00:00 | 17:00:00 |
-| departure\_time | 09:00:00 | 17:00:00 |
-| start\_service\_area\_id | AreaX |  |
-| end\_service\_area\_id |  | AreaX |
-| pickup\_type | 2 |  |
-| drop\_off\_type | 2 |  |
-
-These two stop-time entries start service in *AreaX* at 9 am and stop service in the area at 5 pm.  Riders are required to call the agency in advance to coordinate pickup and dropoff.
-
-##### Single Zone, Defined Endpoints
-
-Let’s now consider an agency operating a route with a single demand-response that has a regular start and end point.  In this case, *StopX* and *StopZ* are the start and end stops, and *AreaX* is the service area served in-between.
-
-|  |  |  |  |  |
-| --- | --- | --- | --- | --- |
-| trip\_id | TripX | TripX | TripX | TripX |
-| stop\_id | StopX | StopY | StopY | StopZ |
-| stop\_sequence | 0 | 1 | 2 | 3 |
-| arrival\_time | 09:00:00 |  |  | 10:00:00 |
-| departure\_time | 09:00:00 |  |  | 10:00:00 |
-| start\_service\_area\_id |  | AreaX |  |  |
-| end\_service\_area\_id |  |  | AreaX |  |
-| pickup\_type |  | 2 |  |  |
-| drop\_off\_type |  | 2 |  |  |
- 
-##### Multiple Zones and Intermediate Stops
- 
-In this case, the agency builds on the previous example, but now defines a mix of normal stop-time and service-area stop-time entries in **stop\_times.txt**:
-
-|  |  |  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| trip\_id | TripX | TripX | TripX | TripX | TripX | TripX | TripX |
-| stop\_id | StopA | StopB | StopB | StopC | StopD | StopD | StopE |
-| stop\_sequence | 0 | 1 | 2 | 3 | 4 | 5 | 6 |
-| arrival\_time | 09:00:00 |  |  | 09:30:00 |  |  | 10:00:00 |
-| departure\_time | 09:00:00 |  |  | 09:30:00 |  |  | 10:00:00 |
-| start\_service\_area\_id |  | AreaX |  |  | AreaY | |
-| end\_service\_area\_id |  |  | AreaX |  |  | AreaY |  |
-| pickup\_type |  | 3 |  |  | 3 |  |  |
-| drop\_off\_type |  | 3 |  |  | 3 |  |  |
-
-In this example, the transit vehicle starts at fixed-stop *StopA*, travels through service area *AreaX*, stops at fixed-stop *StopC*, travels through service area *AreaY*, and finishes service at fixed-stop *StopE*.
-
-##### Intermediate Stops Within Zones
-
-In this case, the agency has a fixed start and end stop, a flexible zone between those stops, and fixed stops within the flexible zone.
-
-|  |  |  |  |  |  |
-| --- | --- | --- | --- | --- | --- |
-| trip\_id | TripX | TripX | TripX | TripX | TripX |
-| stop\_id | StopA | StopB | StopC | StopB | StopD |
-| stop\_sequence | 0 | 1 | 2 | 3 | 4 |
-| arrival\_time | 09:00:00 |  | 09:30:00 |  | 10:00:00 |
-| departure\_time | 09:00:00 |  | 09:30:00 |  | 10:00:00 |
-| start\_service\_area\_id |  | AreaX |  |  |  |
-| end\_service\_area\_id |  |  |  | AreaX |  |
-| pickup\_type |  | 3 |  |  |  |
-| drop\_off\_type |  | 3 |  |  |  |
-
-##### Radius-Based Zones
-
-Some agencies have a simple methodology for defining demand-response service areas. The zone is typically defined as a particular distance from the base route (eg. ½ mile). For agencies that don’t want to maintain the actual geometry for that corridor, the **start\_service\_area\_radius** and **end\_service\_area\_radius** fields offer a simple way to define a service area.
-
-In the following example, an agency defines a ½ mile (~800 meter) flexible service area around their base route. For this technique to work, the trip with trip_id *TripX* must also specify a **shape\_id** value indicating the path of travel.
-
-|  |  |  |  |  | 
-| --- | --- | --- | --- | --- |
-| trip\_id | TripX | TripX | TripX | TripX |
-| stop\_id | StopX | StopY | StopY | StopZ |
-| stop\_sequence | 0 | 1 | 2 | 3 |
-| arrival\_time | 09:00:00 |  |  | 10:00:00 |
-| departure\_time | 09:00:00 |  |  | 10:00:00 |
-| start\_service\_area\_radius |  | 800 |  |  |
-| end\_service\_area\_radius |  |  | 800 |  |
-| pickup\_type |  | 2 |  |  |
-| drop\_off\_type |  | 2 |  |  |
-
-##### Advanced
-
-The Cape Cod RTA operates a [flex route](http://www.capecodrta.org/flex-route.htm#map) between Harwich and Provincetown that combines a number of aspects of flexible service: route deviation, request stops, flexible-route segments, etc.
-
-We can combine the new fields we have defined, including **start\_service\_area\_radius**, **end\_service\_area\_radius**, **continuous\_pickup**, and **continuous\_drop\_off**, to concisely represent this route and all its flexible characteristics.
-
+| Field Name | Type | Required | Description |
+| ---------- | ---- | -------- | ----------- |
+| `booking_rule_id` | ID | **Required** | Identifies the rule. |
+| `booking_type` | Enum | **Required** | Indicates how far in advance booking can be made. Valid options are:<br><br>`0` - Real time booking.<br>`1` - Up to same-day booking with advance notice.<br>`2` - Up to prior day(s) booking. |
+| `prior_notice_duration_min` | Integer | **Conditionally Required** | Minimum number of minutes before travel to make the request.<br><br>**Conditionally Required**:<br>- **Required** for `booking_type=1`.<br>- **Forbidden** otherwise. |
+| `prior_notice_duration_max` | Integer | **Conditionally Optional** | Maximum number of minutes before travel to make the booking request.<br><br>**Conditionally Optional**:<br>- **Forbidden** for `booking_type=0` and `booking_type=2`.<br>- Optional for `booking_type=1`.|
+| `prior_notice_last_day` | Integer | **Conditionally Required** | Last day before travel to make the booking request. <br><br>Example: “Ride must be booked 1 day in advance before 5PM” will be encoded as `prior_notice_last_day=1`.<br><br>**Conditionally Required**:<br>- **Required** for `booking_type=2`.<br>- **Forbidden** otherwise. |
+| `prior_notice_last_time` | Time | **Conditionally Required** | Last time on the last day before travel to make the booking request.<br><br>Example: “Ride must be booked 1 day in advance before 5PM” will be encoded as `prior_notice_last_time=17:00:00`.<br><br>**Conditionally Required**:<br>- **Required** if `prior_notice_last_day` is defined.<br>- **Forbidden** otherwise. |
+| `prior_notice_start_day` | Integer | **Conditionally Optional** | Earliest day before travel to make the booking request.<br><br>Example: “Ride can be booked at the earliest one week in advance at midnight” will be encoded as `prior_notice_start_day=7`.<br><br>**Conditionally Optional**:<br>- **Forbidden** for `booking_type=0`.<br> - **Forbidden** for `booking_type=1` if `prior_notice_duration_max` is defined.<br> - Optional otherwise. |
+| `prior_notice_start_time` | Time | **Conditionally Required** | Earliest time on the earliest day before travel to make the booking request.<br><br>Example: “Ride can be booked at the earliest one week in advance at midnight” will be encoded as `prior_notice_start_time=00:00:00`.<br><br>**Conditionally Required**:<br>- **Required** if `prior_notice_start_day` is defined.<br>- **Forbidden** otherwise. |
+| `prior_notice_service_id` | ID referencing `calendar.service_id` | **Conditionally Optional** | Indicates the service days on which `prior_notice_last_day` or `prior_notice_start_day` are counted. <br><br>Example: If empty, `prior_notice_start_day=2` will be two calendar days in advance. If defined as a `service_id` containing only business days (weekdays without holidays), `prior_notice_start_day=2` will be two business days in advance.<br><br>**Conditionally Optional**:<br> - Optional if `booking_type=2`. <br> - **Forbidden** otherwise. |
+| `message` | Text | Optional | Message to riders utilizing service at a `stop_time` when booking on-demand pickup and drop off. Meant to provide minimal information to be transmitted within a user interface about the action a rider must take in order to utilize the service. |
+| `pickup_message` | Text | Optional | Functions in the same way as `message` but used when riders have on-demand pickup only. |
+| `drop_off_message` | Text | Optional | Functions in the same way as `message` but used when riders have on-demand drop off only. |
+| `phone_number` | Phone number | Optional | Phone number to call to make the booking request. |
+| `info_url` | URL | Optional | URL providing information about the booking rule. |
+| `booking_url` | URL | Optional | URL to an online interface or app where the booking request can be made. |
