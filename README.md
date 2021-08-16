@@ -16,3 +16,8 @@ The below shows updated and added files in GTFS-Flex, compared to the current GT
 
 ### Example Flex v2 Feeds
 [Example 1](spec/Flex_v2_Example_1.zip)<br>[Example 2](spec/Flex_v2_Example_2.zip)<br>[Example 3](spec/Flex_v2_Example_3.zip)
+
+### Versioning
+Semantic versions are established by a git tag in the form of `vX.Y` where `X.Y` is the version name. Multiple changes (commits) may be batched into a single new release.
+
+A whole integer increase is used for breaking changes (MAJOR changes). A decimal increase is used for non-breaking changes (MINOR changes or patches).
