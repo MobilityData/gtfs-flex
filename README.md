@@ -15,4 +15,4 @@ The below shows updated and added files in GTFS-Flex, compared to the current GT
 ![Diagram of added files in GTFS-Flex](spec/GTFS_GTFS-flex_v2_Schema_Diagram.png)
 
 ### Example Flex v2 Feeds
-[On-demand service](spec/FlexExample--on-demand-service.zip)<br>[Same-day service](spec/FlexExample--same-day-service.zip)<br>[Various](spec/FlexExample--various)
+[On-demand service](spec/FlexExample--on-demand-service.zip)<br>[Same-day service](spec/FlexExample--same-day-service.zip)<br>[Various](spec/FlexExample--various.zip)
