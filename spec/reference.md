@@ -57,7 +57,7 @@ In order for a trip planner to provide a user with information about how to requ
 - The `locations.geojson` file must contain a `FeatureCollection`.
 - A `FeatureCollection` defines various stop locations where riders may request pickup or drop off.
 - Every GeoJSON `Feature` must have an `id`. The `id` belongs to the same namespace as `stop_id` in `stops.txt` and `location_group_id` in `location_groups.txt`, called “stop locations”.
-- Every GeoJSON `Feature` must have a `properties` object, which may have the following keys:
+- Every GeoJSON `Feature` should have objects and associated keys according to the table below:
 
 | Field Name | Required | Type | Description |
 | ----- | ----- | ----- | ----- |
