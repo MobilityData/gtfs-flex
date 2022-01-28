@@ -56,24 +56,23 @@ In order for a trip planner to provide a user with information about how to requ
 - This file uses a subset of the GeoJSON format, described in [RFC 7946](https://tools.ietf.org/html/rfc7946).
 - The `locations.geojson` file must contain a `FeatureCollection`.
 - A `FeatureCollection` defines various stop locations where riders may request pickup or drop off.
-- Only features with types `LineString`, `MultiLineString`, `Polygon` and `MultiPolygon` are allowed. Individual stops should be defined in `stops.txt`.
 - Every GeoJSON `Feature` must have an `id`. The `id` belongs to the same namespace as `stop_id` in `stops.txt` and `location_group_id` in `location_groups.txt`, called “stop locations”.
-- Every GeoJSON `Feature` must have a `properties` object, which may have the following keys:
+- Every GeoJSON `Feature` should have objects and associated keys according to the table below:
 
 | Field Name | Required | Type | Description |
 | ----- | ----- | ----- | ----- |
 | -&nbsp;`type` | **Required** | String | `"FeatureCollection"` of locations. |
 | -&nbsp;`features` | **Required** | Array | Collection of `"Feature"` objects describing the locations. |
-| &emsp;\-&nbsp;`type` | **Required** | String | `"Feature"` |
-| &emsp;\-&nbsp;`id` | **Required** | String| Location ID belonging to the same namespace as `stops.stop_id`. Therefore, it is forbidden to define an `id` from `locations.geojson` with the same value as a `stops.stop_id`.<br><br>By default, every `id` from `locations.geojson` belongs to a `location_groups.location_group_id` of the same value.|
-| &emsp;\-&nbsp;`properties` | **Required** | Object | Location property keys. |
-| &emsp;&emsp;\-&nbsp;`stop_name` | Optional | String | Indicates the name of the location as displayed to riders. |
-| &emsp;&emsp;\-&nbsp;`stop_desc` | Optional | String | Meaningful description of the location to help orient riders. |
-| &emsp;&emsp;\-&nbsp;`zone_id` | **Conditionally Required** | String | Identifies the fare zone for a stop.<br><br>Conditionally required:<br>- **Required** if `fare_rules.txt` is defined.<br>- Optional otherwise.|
-| &emsp;&emsp;\-&nbsp;`stop_url` | Optional | URL |  URL of a web page about the location.<br><br>If provided, the URL should be different from the `agency.agency_url` and the `routes.route_url` field values. |
-| &emsp;\-&nbsp;`geometry` | **Required** | Object | Geometry of the location. |
-| &emsp;&emsp;\-&nbsp;`type` | **Required** | String | Must be of type:<br>-&nbsp;`"Linestring"`<br>-&nbsp;`"MutiLineString"`<br>-&nbsp;`"Polygon"`<br>-&nbsp;`"MultiPolygon"` |
-| &emsp;&emsp;\-&nbsp;`coordinates` | **Required** | Array | Geographic coordinates (latitude and longitude) defining the geometry of the location. |
+| &nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`type` | **Required** | String | `"Feature"` |
+| &nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`id` | **Required** | String| Location ID belonging to the same namespace as `stops.stop_id`. Therefore, it is forbidden to define an `id` from `locations.geojson` with the same value as a `stops.stop_id`.<br><br>By default, every `id` from `locations.geojson` belongs to a `location_groups.location_group_id` of the same value.|
+| &nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`properties` | **Required** | Object | Location property keys. |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`stop_name` | Optional | String | Indicates the name of the location as displayed to riders. |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`stop_desc` | Optional | String | Meaningful description of the location to help orient riders. |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`zone_id` | **Conditionally Required** | String | Identifies the fare zone for a stop.<br><br>Conditionally required:<br>- **Required** if `fare_rules.txt` is defined.<br>- Optional otherwise.|
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`stop_url` | Optional | URL |  URL of a web page about the location.<br><br>If provided, the URL should be different from the `agency.agency_url` and the `routes.route_url` field values. |
+| &nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`geometry` | **Required** | Object | Geometry of the location. |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`type` | **Required** | String | Must be of type:<br>-&nbsp;`"Point"`<br>-&nbsp;`"MultiPoint"`<br>-&nbsp;`"Linestring"`<br>-&nbsp;`"MutiLineString"`<br>-&nbsp;`"Polygon"`<br>-&nbsp;`"MultiPolygon"` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`coordinates` | **Required** | Array | Geographic coordinates (latitude and longitude) defining the geometry of the location. |
 
 #### stop_times.txt (file extended)
 
