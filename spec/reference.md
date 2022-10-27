@@ -26,8 +26,8 @@ GTFS-FlexibleTrips describes the times when and locations where flexible service
 ### Overview
 This extension
 
-- **Describes locations and groups of locations where riders can request pickup or drop off**: these locations are included in new files called `location_groups.txt` and `locations.geojson`
-- **Indicates the times when services are available at on demand locations and the expected travel times**: new fields in `stop_times.txt` provide ranges that equate to service hours and expected travel times on demand trips
+- **Describes locations and groups of locations where riders can request pickup or drop off**: these locations are included in a new file called `locations.geojson` and the existing Fares v2 file `stop_areas.txt`.
+- **Indicates the times when services are available at on-demand locations and the expected travel times**: new fields in `stop_times.txt` provide ranges that equate to service hours and expected travel times on demand trips
 - **Clarifies elements of the current specification necessary to inform data consumers of how to interpret the above files and fields added**: new fields in `stop_times.txt` provide ranges that equate to service hours or expected traversal times for locations
 
 ### Requirements
@@ -38,19 +38,11 @@ In order for a trip planner to provide a user with information about how to requ
 ### Files extended or added
 | File name | State | Defines |
 | --------- | ----- | ------- |
-| `location_groups.txt` | Added | (Optional file) Adds location groups. Location groups are groups of stops and GeoJSON locations, which allow predetermined groups of these features to be specified on individual rows of `stop_times.txt`. |
-| `locations.geojson` | Added | (Optional file) Adds GeoJSON locations, which are `LineString`, `MultiLineString`, `Polygon` and `MultiPolygon` features that indicate groups of lat/lon coordinates where riders can request either pickup or drop off. |
+| `locations.geojson` | Added | (Optional file) Adds GeoJSON locations, which are `Polygon` and `MultiPolygon` features that indicate groups of lat/lon coordinates defining zones where riders can request either pickup or drop off. |
+| `stop_areas.txt` | Modified | (Optional file) Modifies file to allow grouping of GeoJSON locations and/or stops which allow predetermined groups of these features to be specified on individual rows of `stop_times.txt`. |
 | `stop_times.txt` | Extended and modified |
 
 ### File definitions
-
-#### location_groups.txt (file added)
-
-| Field Name | Type | Required | Description |
-| ---------- | ---- | ------------ | ----------- |
-| `location_group_id` | ID | **Required** | Identifies a location group. A location group is a group of stops or GeoJSON locations that together indicate locations where a rider may request pickup or drop off.<br><br> By default, every `stop_id` and `id` from `locations.geojson` belongs to a `location_group_id` of the same value. Therefore, it is forbidden to define a `location_group_id` with the same value as a `stop_id` or `id` from `locations.geojson`.<br><br>Multiple entries in `location_groups.txt` can have the same `location_group_id`. | 
-| `location_id` | ID referencing `stops.stop_id` or `id` from `locations.geojson` | Optional | Identifies a stop or location belonging to the location group. |
-| `location_group_name` | Text | Optional | Name of the location group. Must be defined either once, or exhaustively for a single `location_group_id`. |
 
 #### locations.geojson (file added)
 - This file uses a subset of the GeoJSON format, described in [RFC 7946](https://tools.ietf.org/html/rfc7946).
@@ -59,7 +51,7 @@ In order for a trip planner to provide a user with information about how to requ
 - Every GeoJSON `Feature` must have an `id`. The `id` belongs to the same namespace as `stop_id` in `stops.txt` and `location_group_id` in `location_groups.txt`, called “stop locations”.
 - Every GeoJSON `Feature` should have objects and associated keys according to the table below:
 
-| Field Name | Required | Type | Description |
+| Field Name | Presence | Type | Description |
 | ----- | ----- | ----- | ----- |
 | -&nbsp;`type` | **Required** | String | `"FeatureCollection"` of locations. |
 | -&nbsp;`features` | **Required** | Array | Collection of `"Feature"` objects describing the locations. |
@@ -71,12 +63,25 @@ In order for a trip planner to provide a user with information about how to requ
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`zone_id` | **Conditionally Required** | String | Identifies the fare zone for a stop.<br><br>Conditionally required:<br>- **Required** if `fare_rules.txt` is defined.<br>- Optional otherwise.|
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`stop_url` | Optional | URL |  URL of a web page about the location.<br><br>If provided, the URL should be different from the `agency.agency_url` and the `routes.route_url` field values. |
 | &nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`geometry` | **Required** | Object | Geometry of the location. |
-| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`type` | **Required** | String | Must be of type:<br>-&nbsp;`"Point"`<br>-&nbsp;`"MultiPoint"`<br>-&nbsp;`"Linestring"`<br>-&nbsp;`"MutiLineString"`<br>-&nbsp;`"Polygon"`<br>-&nbsp;`"MultiPolygon"` |
+| &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`type` | **Required** | String | Must be of type:<br>-&nbsp;`"Polygon"`<br>-&nbsp;`"MultiPolygon"` |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\-&nbsp;`coordinates` | **Required** | Array | Geographic coordinates (latitude and longitude) defining the geometry of the location. |
+
+#### areas.txt (no change)
+| Field Name | Type | Presence | Description |
+| ---------- | ---- | ------------ | ----------- |
+| `area_id` | Unique ID	| **Required** | Identifies an area. Must be unique in areas.txt.
+| `area_name` | Text | **Optional** | The name of the area as displayed to the rider.
+
+#### stop_areas.txt (file modified)
+
+| Field Name | Type | Presence | Description |
+| ---------- | ---- | ------------ | ----------- |
+| `area_id` | Foreign ID referencing `areas.area_id` | **Required** | Identifies an area to which one or multiple stop_ids belong. The same `stop_id` may be defined in many `area_id`s.<br><br>May also identify a group of stops and/or GeoJSON locations that together indicate locations where a rider may request pickup or drop off.<br><br>It is forbidden to define an `area_id` with the same value as a `stop_id` or `id` from `locations.geojson`. | 
+| `stop_id` | ID referencing `stops.stop_id` or `id` from `locations.geojson` | **Required** | Identifies a stop or GeoJSON location. If a station (i.e. a stop with `stops.location_type=1`) is defined in this field, it is assumed that all of its platforms (i.e. all stops with `stops.location_type=0` that have this station defined as `stops.parent_station`) are part of the same area. This behavior can be overridden by assigning platforms to other areas. |
 
 #### stop_times.txt (file extended)
 
-| Field Name | Type | Required | Description |
+| Field Name | Type | Presence | Description |
 | ---------- | ---- | -------- | ----------- |
 | `stop_id` | ID referencing `stops.stop_id`, `location_groups.location_group_id`, or `id` from `locations.geojson`  | **Required** | Identifies the serviced stop. All stops serviced during a trip must have a record in `stop_times.txt`. Referenced locations must be stops, not stations or station entrances. A stop may be serviced multiple times in the same trip, and multiple trips and routes may service the same stop.<br><br>If service is on demand, a GeoJSON location or location group can be referenced:<br>-&nbsp;`id` from `locations.geojson`<br>-&nbsp;`location_groups.location_group_id` |
 | `stop_sequence` | Non-negative integer  | **Required** | Order of stops for a particular trip. The values must increase along the trip but do not need to be consecutive. <br><br> *Example: The first location on the trip could have a `stop_sequence`=`1`, the second location on the trip could have a `stop_sequence`=`23`, the third location could have a `stop_sequence`=`40`, and so on.* <br><br> Travel within the same location group or GeoJSON location requires two records in `stop_times.txt` with the same `stop_id` and consecutive values of `stop_sequence`. |
@@ -106,14 +111,14 @@ None. Extends the GTFS.
 ### Table Definitions
 #### stop_times.txt (file extended)
 
-| Field Name | Type | Required | Description |
+| Field Name | Type | Presence | Description |
 | ---------- | ---- | -------- | ----------- |
 | `pickup_booking_rule_id` | ID referencing `booking_rules.booking_rule_id` | Optional | Identifies the boarding booking rule at this stop time.<br><br>Recommended when `pickup_type=2`. |
 | `drop_off_booking_rule_id` | ID referencing `booking_rules.booking_rule_id` | Optional | Identifies the alighting booking rule at this stop time.<br><br>Recommended when `drop_off_type=2`. |
 
 #### booking_rules.txt (file added)
 
-| Field Name | Type | Required | Description |
+| Field Name | Type | Presence | Description |
 | ---------- | ---- | -------- | ----------- |
 | `booking_rule_id` | ID | **Required** | Identifies the rule. |
 | `booking_type` | Enum | **Required** | Indicates how far in advance booking can be made. Valid options are:<br><br>`0` - Real time booking.<br>`1` - Up to same-day booking with advance notice.<br>`2` - Up to prior day(s) booking. |
