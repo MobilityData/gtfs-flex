@@ -8,6 +8,7 @@ GTFS-Flex v2 is composed of two extensions that aim to model the variety of dema
 | Extension name | Description |
 | ----- | ----- |
 | **[GTFS-FlexibleTrips](#gtfs-flexibletrips)** | Flexible services that operate according to some schedule but are responsive to on-demand requests of individual riders. |
+| **[GTFS-FlexibleTripDurations](#gtfs-flexibletripdurations)** | Information to help consumers calculate the duration of trips using **GTFS-FlexibleTrips**. |
 | **[GTFS-BookingRules](#gtfs-bookingrules)** | Booking information for rider-requested services using **GTFS-FlexibleTrips**, such as how far in advance booking should occur or a phone number that should be called. |
 
 ## GTFS-FlexibleTrips
@@ -91,8 +92,37 @@ In order for a trip planner to provide a user with information about how to requ
 | `end_pickup_drop_off_window` | Time | **Conditionally Required** | Time that on-demand service ends in a GeoJSON location, stop area or stop.<br><br>**Conditionally Required**:<br>-&nbsp;**Required** if `stop_times.stop_id` refers to `stop_areas.area_id` or `id` from `locations.geojson`. <br>-&nbsp;**Forbidden** if `stop_times.arrival_time` or `stop_times.departure_time` are defined. |
 | `pickup_type` | Enum | **Conditionally Forbidden** | Indicates pickup method. Valid options are:<br><br> `0` or empty - Regularly scheduled pickup.<br> `1` - No pickup available.<br> `2` - Must phone agency to arrange pickup.<br> `3` - Must coordinate with driver to arrange pickup.<br><br>  **Conditionally Forbidden**: <br>- `pickup_type=0` **forbidden** for `stop_times.stop_id` referring to `stop_areas.area_id` or `id` from `locations.geojson`.<br> - `pickup_type=3` **forbidden** for `stop_areas.area_id` or `locations.geojson`.<br> - Optional otherwise. |
 | `drop_off_type` | Enum | **Conditionally Forbidden** | Indicates drop off method. Valid options are:<br><br> `0` or empty - Regularly scheduled drop off.<br> `1` - No drop off available.<br> `2` - Must phone agency to arrange drop off.<br> `3` - Must coordinate with driver to arrange drop off.<br><br> **Conditionally Forbidden**:<br> - `drop_off_type=0` **forbidden** for `stop_times.stop_id` referring to `stop_areas.area_id` or `id` from `locations.geojson`.<br> - Optional otherwise.
-| `mean_duration_factor`<br><br>and<br><br>`mean_duration_offset` | Float | **Conditionally Forbidden** | Together, `mean_duration_factor` and `mean_duration_offset` allow an estimation of the duration a rider’s trip will take, in minutes, using the on-demand service in a GeoJSON location or stop area. <br><br> Data consumers are expected to use `mean_duration_factor` and `mean_duration_offset` to make the following calculation:<br><br>`MeanTravelDuration = mean_duration_factor × DrivingDuration + mean_duration_offset`<br><br>Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `MeanTravelDuration` is the calculated average time one expects to travel the same trip using the on-demand service.<br><br>The `MeanTravelDuration` may be calculated for the time and the day of the trip to take into account traffic; in other words the consumer is expected to know that `DrivingDuration` is dynamic. Producers should thus provide values that reflect increases in `DrivingDuration` due to additional pickups and drop offs beyond that of the passenger. A downtown TNC will likely always have a `mean_duration_factor` of 1, with or without traffic, since it goes with the flow. But a shared service can have a factor of 2 or more if many additional pickups and drop offs are expected. `mean_duration_offset` can be utilized to increase travel times of shorter trips relatively more than times for longer trips.<br><br>While traveling through undefined space between GeoJSON locations or stop areas, it is assumed that:<br><br>`MeanTravelDuration = DrivingDuration`<br><br>**Conditionally Forbidden**:<br>- **Forbidden** if `stop_times.stop_id` does not refer to a `stop_areas.area_id` or an `id` from `locations.geojson`.<br>- Optional otherwise. |
-| `safe_duration_factor`<br><br>and<br><br>`safe_duration_offset` | Float | **Conditionally Forbidden** | Together, `safe_duration_factor` and `safe_duration_offset` allow an estimation of the longest amount of time a rider can expect the on-demand service in a GeoJSON location or stop areas may require, in minutes, for 95% of trips. <br><br> Data consumers are expected to use `safe_duration_factor` and `safe_duration_offset` to make the following calculation:<br><br> `SafeTravelDuration = safe_duration_factor × DrivingDuration + safe_duration_offset`<br><br> Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `SafeTravelDuration` is the longest amount of time a rider can expect the on-demand service in a GeoJSON location or stop area may require.<br><br>**Conditionally Forbidden**:<br>- **Forbidden** if `stop_times.stop_id` does not refer to a `stop_areas.area_id` or an `id` from `locations.geojson`.<br>- Optional otherwise. |
+
+## GTFS-FlexibleTripTimes
+
+### Goals
+This extension provides for fields which allow a data producer to help a data consumer estimate the amount of time a flexible service will require to operate from a specific origin to specific destination. This extension was originally part of **GTFS-FlexibleTrips**, but was separated out into its own extension on account of not being ready for incorporation into the GTFS Schedule specification in early 2024.
+
+This extension proposes to include new fields as part of trips.txt, but an earlier version of **GTFS-FlexibleTrips** proposed adding these fields to stop_times.txt. Allowing these values to be different for each stop time will be necessary to cover certain use cases, such as services with long distances in between flexible zonees, but implementation within consuming applications would be complex.
+
+### Overview
+This extension
+
+- **Indicates the speed consumers should indicate flexible services should travel, relative to a driving duration that consumers are expected to estimate themselves**: these values are added to the existing `trips.txt` file.
+
+### Requirements
+None. Extends the GTFS.
+
+In order for a trip planner to provide a user with information about how to request many flexible services, data producers must also provide information according to the **GTFS-BookingRules** extension.
+
+### Files extended or added
+| File name | State | Defines |
+| --------- | ----- | ------- |
+| `trips.txt` | Extended | (Required file) Extends file to add columns indicating service speed. |
+
+### File definitions
+
+#### trips.txt (file extended)
+
+| Field Name | Type | Presence | Description |
+| ---------- | ---- | -------- | ----------- |
+| `mean_duration_factor`<br><br>and<br><br>`mean_duration_offset` | Float | **Optional** | Together, `mean_duration_factor` and `mean_duration_offset` allow an estimation of the duration a rider’s trip will take, in minutes, using the on-demand service in a GeoJSON location or stop area. <br><br> Data consumers are expected to use `mean_duration_factor` and `mean_duration_offset` to make the following calculation:<br><br>`MeanTravelDuration = mean_duration_factor × DrivingDuration + mean_duration_offset`<br><br>Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `MeanTravelDuration` is the calculated average time one expects to travel the same trip using the on-demand service.<br><br>The `MeanTravelDuration` may be calculated for the time and the day of the trip to take into account traffic; in other words the consumer is expected to know that `DrivingDuration` is dynamic. Producers should thus provide values that reflect increases in `DrivingDuration` due to additional pickups and drop offs beyond that of the passenger. A taxi or TNC will likely always have a `mean_duration_factor` of 1, with or without traffic, since it goes with the flow. But a shared service can have a factor of 2 or more if many additional pickups and drop offs are expected. `mean_duration_offset` can be utilized to increase travel times of shorter trips relatively more than times for longer trips, or to add time to account for service boarding or payment. |
+| `safe_duration_factor`<br><br>and<br><br>`safe_duration_offset` | Float | **Optional** | Together, `safe_duration_factor` and `safe_duration_offset` allow an estimation of the longest amount of time a rider can expect the on-demand service in a GeoJSON location or stop areas may require, in minutes, for 95% of trips. <br><br> Data consumers are expected to use `safe_duration_factor` and `safe_duration_offset` to make the following calculation:<br><br> `SafeTravelDuration = safe_duration_factor × DrivingDuration + safe_duration_offset`<br><br> Where `DrivingDuration` is the time it would take in a car to travel the distance being calculated for the on-demand service, and `SafeTravelDuration` is the longest amount of time a rider can expect the on-demand service in a GeoJSON location or stop area may require. |
 
 ## GTFS-BookingRules
 
